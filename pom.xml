@@ -1,0 +1,137 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.zj</groupId>
+	<artifactId>rpc</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<properties>
+		<!-- 指明使用JDK8 -->
+		<java-version>1.8</java-version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-core</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.8</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hbase</groupId>
+			<artifactId>hbase-client</artifactId>
+			<version>1.2.4</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>rpc</finalName>
+		<plugins>
+			<!-- compiler插件, 设定JDK版本 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
+				<configuration>
+					<source>${java-version}</source>
+					<target>${java-version}</target>
+					<showWarnings>true</showWarnings>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>jar-with-dependencies</descriptorRefs>
+					<archive>
+						<manifest>
+							<mainClass>com.zj.rpc.SyncPrimitive</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-jar-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- 把生成的jar包放在lib目录下（和其他所有jar包一起） -->
+			<!-- <outputDirectory>${project.build.directory}/lib</outputDirectory> -->
+			<!-- <archive> -->
+			<!-- <manifest> -->
+			<!-- <addClasspath>true</addClasspath> -->
+			<!-- <classpathPrefix>/lib</classpathPrefix> -->
+			<!-- <mainClass>com.zj.rpc.HBaseManagerMain</mainClass> -->
+			<!-- </manifest> -->
+			<!-- </archive> -->
+			<!-- <excludes> -->
+			<!-- 排除掉一些文件,不要放到jar包中， 这里是为了排除掉src/main/resources中的文件（它们应该放到conf目录） 这里只能指定要排除的目标文件，而不能指定源文件，虽然不够完美，但是基本能达到目的。 -->
+			<!-- <exclude>*.xml</exclude> -->
+			<!-- <exclude>*.properties</exclude> -->
+			<!-- </excludes> -->
+			<!-- </configuration> -->
+
+			<!-- </plugin> -->
+
+
+			<!-- 用于拷贝maven依赖的plugin -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.10</version>
+				<executions>
+					<execution>
+						<id>copy-dependencies</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<!-- 把依赖的所有maven jar包拷贝到lib目录中（这样所有的jar包都在lib目录中） -->
+							<outputDirectory>${project.build.directory}/lib</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- 配置生成源代码jar的plugin <plugin> <artifactId>maven-source-plugin</artifactId> 
+				<version>2.4</version> <configuration> <attach>true</attach> <encoding>UTF-8</encoding> 
+				<outputDirectory>${project.build.directory}/lib</outputDirectory> </configuration> 
+				<executions> <execution> <phase>compile</phase> <goals> <goal>jar</goal> 
+				</goals> </execution> </executions> </plugin> -->
+
+			<!--  跳过单元测试 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+			<!-- 忽略单元测试失败 -->
+			<!-- <plugin> -->
+			<!-- <groupId>org.apache.maven.plugins</groupId> -->
+			<!-- <artifactId>maven-surefire-plugin</artifactId> -->
+			<!-- <configuration> -->
+			<!-- <testFailureIgnore>true</testFailureIgnore> -->
+			<!-- </configuration> -->
+			<!-- </plugin> -->
+		</plugins>
+	</build>
+</project>
