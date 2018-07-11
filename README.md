@@ -28,6 +28,7 @@
 zookeeper版本为3.4.9 
 现有三台服务器 分别为192.168.66.133(主) 134 135
 zoo.cfg 配置为:
+<pre class="prettyprint lang-javascript"> 
 tickTime=2000
 initLimit=5
 syncLimit=2
@@ -39,26 +40,33 @@ server.1=master:2888:3888 #(主机名, 心跳端口、数据端口)
 server.2=slave1:2888:3888
 server.3=slave2:2888:3888
 
+</pre>
 添加文件myid 至 dataDir 内容分别为1，2，3
 
 /etc/hosts 修改域名映射
+<pre class="prettyprint lang-javascript"> 
 192.168.66.133 master
 192.168.66.134 slave1
 192.168.66.135 slave2
+</pre>
 
-*功能点一实现分布式消息队列:
+1. 实现分布式消息队列:
 客户端连接shell :zkCli.sh -server master:2181
 主zookeeper启动shell:zkServer.sh start
 
 由客户端(本机)不断的访问
+<pre class="prettyprint lang-javascript"> 
 java -jar /Users/zengjie/work/rpc/target/rpc-jar-with-dependencies.jar  qTest master 100 c 
+</pre>
 不断的产生consumer 
 
 由 master 不断的提供消息队列
+<pre class="prettyprint lang-javascript"> 
 java -jar /work/rpc-jar-with-dependencies.jar qTest localhost 1000 p
+</pre>
 不断的生成Producer
 
-*功能点二实现分布式锁:(待完成)
+2. 实现分布式锁:(待完成)
 
 ## 常见问题
 
